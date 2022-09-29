@@ -1,12 +1,8 @@
 const choices = ['rock', 'paper', 'scissors'];
 const patterns = /^(rock|paper|scissors)$/i
 
-// Tests user input against the 'patterns' regex
-//returns the input in lower case to be able to compare against computer choice
-//returns null if prompt is cancelled or empty
 function checkInput(regex, text) {
-    return regex.test(text);
-    
+    return regex.test(text);    
 }
 
 function playerChoice() {
@@ -20,9 +16,14 @@ function playerChoice() {
         return playerChoice();
     }    
 }
-// lets computer choose from array of options
+
 function computerChoice() {
     return choices[Math.floor(Math.random() * choices.length)];
+}
+
+function capFirstLetter(text) {
+    if (text === null) { return null; }
+    return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 // plays a single round of rock paper scissors
@@ -36,38 +37,29 @@ function playRound() {
     if (playerSelection === null) {
         return;
     } else {
-        console.log(`opponent chose ${compSelection} vs your ${playerSelection}`);
+        playerSelection = capFirstLetter(playerSelection);
+        compSelection = capFirstLetter(compSelection);
+        console.log(`${playerSelection} vs ${compSelection}!`);
         if ( compSelection == playerSelection) {
         console.log('tie');
         return 0;
-        } else if (playerSelection == 'rock') {
-            if (compSelection == 'scissors') {
-                console.log('You win, Rock beats Scissors');
-                return 1;
-            } else { 
-                console.log('You lose, Rock loses to Paper');
-                return 2;
-            }
-        } else if (playerSelection == 'paper') {
-            if (compSelection == 'rock') {
-                console.log('You win, Paper beats Rock');
-                return 1;
-            } else { 
-                console.log('You lose, Paper loses to Scissors');
-                return 2;
-            }
-        } else if (playerSelection == 'scissors') {
-            if (compSelection == 'paper') {
-                console.log('You win, Scissors beats Paper');
-                return 1;
-            } else { 
-                console.log('You lose, Scissors loses to Rock');
-                return 2;
-            }
-        } 
+        } else if (playerSelection === 'rock' && compSelection === 'scissors' || playerSelection === 'paper' && compSelection === 'rock' || playerSelection === 'scissors' && compSelection === 'paper') {
+            console.log(`Round won! ${playerSelection} beats ${compSelection}`);
+            return 1;
+        } else {
+            console.log(`Round lost. `);
+            return 2;
+        }
     }
 }
 
+
+function countScore(score1, score2) {
+    return score1 == score2 ? 'Tie' :
+    score1 > score2 ? 'You win!' :
+    'You lose.' ;
+
+}
 
 //calls the playround() up to 5 times
 /* increases user score or comuter score by 1 each time one of them wins, leaves them 
@@ -100,15 +92,10 @@ function playGame() {
         }
         console.log(userScore, compScore); 
         
-    } 
-    if (userScore > compScore && !cancelled) {
-        return 'Congratulations, you won!';
-    } else if (compScore > userScore && !cancelled) {
-        return 'You lost! Better luck next time!';
-    } else if (compScore == userScore && !cancelled)  {
-        return 'Tie';
-    } else {
-        return 'You cancelled the game';
-    }   
+    }
+    if (cancelled) {
+        return 'You cancelled the game'
+    }
+    return countScore(userScore, compScore);
 }
 
